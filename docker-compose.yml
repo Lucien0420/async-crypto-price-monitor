@@ -1,0 +1,13 @@
+services:
+  monitor:
+    build: .
+    image: async-price-monitor:local
+    restart: unless-stopped
+    environment:
+      # Paths inside the container (WORKDIR /app); persist via volumes below.
+      DATABASE_PATH: data/monitor.db
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    # Optional: uncomment to load variables from a local `.env` file.
+    # env_file: .env

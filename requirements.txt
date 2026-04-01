@@ -1,0 +1,4 @@
+# Pinned versions for reproducible installs; run tests after bumping.
+aiohttp==3.13.5
+aiosqlite==0.21.0
+python-dotenv==1.0.1
