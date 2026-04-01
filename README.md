@@ -131,7 +131,7 @@ Order follows the **same flow as production**: terminal output, structured log, 
 | `COIN_IDS` | Comma-separated CoinGecko ids (e.g. `bitcoin,ethereum`) — **one HTTP request** fetches all coins each round | *(see `COIN_ID`)* |
 | `COIN_ID` | Used only if `COIN_IDS` is unset: single coin id | `bitcoin` |
 | `VS_CURRENCY` | Quote currency | `usd` |
-| `POLL_INTERVAL_SEC` | Seconds between polls | `30` |
+| `POLL_INTERVAL_SEC` | Seconds between **full poll rounds** (all `COIN_IDS` in one request per round). Without a Demo API key, **~20–30s or higher** is safer; values in the low teens often hit **429** | `30` |
 | `PRICE_ALERT_THRESHOLD_PERCENT` | Alert if abs % change vs previous row exceeds this | `1.0` |
 | `DATABASE_PATH` | SQLite path (relative to project root unless absolute) | `data/monitor.db` |
 | `COINGECKO_API_KEY` | Optional CoinGecko Demo API key (`x-cg-demo-api-key` header) | *(empty)* |
@@ -147,6 +147,8 @@ One **SQLite file** (default `data/monitor.db`), one table `price_snapshots`. Ea
 ## CoinGecko rate limits (HTTP 429)
 
 The free public API enforces per-IP / per-minute limits. Polling too aggressively—or sharing the IP with other clients—can return **429 Too Many Requests**. The code **waits and retries**; if limits persist, increase **`POLL_INTERVAL_SEC`** and/or set **`COINGECKO_API_KEY`** (Demo tier).
+
+**Practical guideline (not an official quota):** with **no** `COINGECKO_API_KEY`, keep **`POLL_INTERVAL_SEC` ≥ ~20** (default **30** is a reasonable baseline). CoinGecko may change limits; more coins per request does **not** multiply calls per round (one GET per round), but a very short interval still risks 429.
 
 ---
 
